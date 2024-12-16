@@ -16,8 +16,15 @@ CREATE TABLE event (
   updated TIMESTAMP NOT NULL,
   hornored TEXT,
   comments TEXT,
-  subnodes TEXT,
-  FOREIGN KEY (primarynode) REFERENCES user (id)
+);
+
+CREATE user_event (
+  user_id INTEGER,
+  event_id INTEGER,
+  role INTEGER,
+  PRIMARY KEY (user_id, event_id),
+  FOREIGN KEY (user_id) REFERENCES user (id),
+  FOREIGN KEY (event_id) REFERENCES event (id)
 );
 
 CREATE TABLE record (

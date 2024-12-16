@@ -62,6 +62,7 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+        email = request.form['email']
         db = get_db()
         error = None
         user = db.execute(

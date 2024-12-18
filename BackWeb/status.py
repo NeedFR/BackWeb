@@ -12,11 +12,14 @@ bp = Blueprint('status', __name__)
 @bp.route('/')
 def index():
     db = get_db()
-    newevent = db.execute(
-        'SELECT e.id, e.eventname, e.hornored, e.created, e.subnodes author_id, username'
-        ' FROM event e JOIN user u ON e.primarynode = u.id'
-        ' ORDER BY created DESC'
+    #最近三天有过更新的所有event数量
+    updatedeventnumber = db.execute(
+    'SELECT count(*) AS days_difference FROM event WHERE JULIANDAY(DATE()) - JULIANDAY(updated) < 3';
     ).fetone()
+    #最近三天创建的event数量
+    
+    #最近三天查看的event数量
+    
     return render_template('blog/index.html', posts=posts)
 
 
@@ -35,23 +38,6 @@ def get_post(id, check_author=True):
         abort(403)
 
     return post
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     
 @bp.route('/create', methods=('GET', 'POST'))
 @login_required

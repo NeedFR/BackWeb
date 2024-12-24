@@ -3,8 +3,8 @@ from flask import (
 )
 from werkzeug.exceptions import abort
 
-from flaskr.auth import login_required
-from flaskr.db import get_db
+from BackWeb.auth import login_required
+from BackWeb.db import get_db
 
 bp = Blueprint('status', __name__)
 
@@ -13,17 +13,17 @@ bp = Blueprint('status', __name__)
 def index():
     db = get_db()
     #最近三天有过更新的所有event数量
-    updatedeventnumber = db.execute(
-    'SELECT count(*) AS days_difference FROM event WHERE JULIANDAY(DATE()) - JULIANDAY(updated) < 3';
-    ).fetone()
+    countofevents = db.execute(
+    'SELECT count(*) AS days_difference FROM event WHERE JULIANDAY(DATE()) - JULIANDAY(updated) < 3'
+    ).fetchone()
     #最近三天创建的event数量
     
     #最近三天查看的event数量
     
-    return render_template('blog/index.html', posts=posts)
+    return render_template('status/index.html', countofevents=countofevents)
 
 
-def get_post(id, check_author=True):
+def get_event(id, check_author=True):
     post = get_db().execute(
         'SELECT p.id, title, body, created, author_id, username'
         ' FROM post p JOIN user u ON p.author_id = u.id'

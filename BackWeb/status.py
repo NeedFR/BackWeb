@@ -1,6 +1,4 @@
-from flask import (
-    Blueprint, flash, g, redirect, render_template, request, url_for
-)
+from flask import Blueprint, flash, g, redirect, render_template, request, session, url_for
 from werkzeug.exceptions import abort
 
 from BackWeb.auth import login_required
@@ -16,28 +14,30 @@ def index():
     countofevents = db.execute(
     'SELECT count(*) AS days_difference FROM event WHERE JULIANDAY(DATE()) - JULIANDAY(updated) < 3'
     ).fetchone()
-    #最近三天创建的event数量
-    
-    #最近三天查看的event数量
-    
-    return render_template('status/index.html', countofevents=countofevents)
+    #列出和登录用户相关的所有event
+    if g.user is not None:
+        events = get_events(g.user['id'])
+        
+        return render_template('status/index.html', countofevents=countofevents, events=events)
+    else:
+        return render_template('status/index.html', countofevents=countofevents, events=None)
+	
 
 
-def get_event(id, check_author=True):
-    post = get_db().execute(
-        'SELECT p.id, title, body, created, author_id, username'
-        ' FROM post p JOIN user u ON p.author_id = u.id'
-        ' WHERE p.id = ?',
-        (id,)
-    ).fetchone()
+def get_events(id, check_author=True):
+    sqlstr = "SELECT e.eventname, e.created, e.updated,e.comments, ue.role, ue.curflag" \
+        " FROM event e" \
+        " JOIN user_event ue ON e.id=ue.event_id" \
+        " JOIN user u ON ue.user_id = u.id" \
+        " WHERE u.id = {0}".format(id)
+    print(sqlstr)	
+    events=get_db().execute(sqlstr).fetchall()
+    #if events is None:
+    #    abort(404, f"User id {id} doesn't exist.")
 
-    if post is None:
-        abort(404, f"Post id {id} doesn't exist.")
-
-    if check_author and post['author_id'] != g.user['id']:
-        abort(403)
-
-    return post
+    #if check_author and post['author_id'] != g.user['id']:
+    #    abort(403)
+    return events
     
 @bp.route('/create', methods=('GET', 'POST'))
 @login_required

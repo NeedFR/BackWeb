@@ -8,12 +8,14 @@
 {% endblock %}
 
 {% block content %}
-	<h1>We support {{countofevents['days_difference']}} events during 3 days!</h1>
+	<h1>The system support {{countofevents['days_difference']}} events during 3 days!</h1>
 	<form method='POST'>
 		<label for="creator">Event Creator</label>
 		<input name="creator" id="creator" required>
 		<label for='eventname'>Event Name</label>
 		<input name="eventname" id="eventname" required>
+		<br><br>
+		<input type="submit" value="Submit">
 	</form>
 	{% if events%}
 		{% for event in events %}

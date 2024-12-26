@@ -7,8 +7,37 @@ from BackWeb.db import get_db
 bp = Blueprint('status', __name__)
 
 
-@bp.route('/')
+@bp.route('/', methods=['POST','GET'])
 def index():
+    if request.method == 'POST':
+        creator = request.form['creator']
+        eventname = request.form['eventname']
+        error = None
+
+        if not creator or not eventname:
+            error = 'Creator and eventname is required.'
+
+        if error is not None:
+            flash(error)
+        else:
+            db = get_db()
+            strsql1 = "SELECT u.id, e.id" \
+                     " FROM event e" \
+                     " JOIN user_event ue ON ue.event_id = e.id" \
+                     " JOIN user u ON ue.user_id = u.id" \
+                     " WHERE e.eventname = '{0}' AND u.username='{1}' AND ue.role=0".format(eventname, creator)
+            
+            a = db.execute(strsql1).fetchone()
+            db.commit()
+            if a is None:
+                error = 'No such events'
+                flash(error)
+                return render_template('status/index.html')
+            strsql = "INSERT INTO user_event(user_id, event_id, role, curflag) VALUES({0},{1},2,1)".format(g.user['id'],a[1])
+            print(strsql)
+            db.execute(strsql)
+            db.commit()
+            return render_template('status/index.html')
     db = get_db()
     #最近三天有过更新的所有event数量
     countofevents = db.execute(
@@ -29,7 +58,8 @@ def get_events(id, check_author=True):
         " FROM event e" \
         " JOIN user_event ue ON e.id=ue.event_id" \
         " JOIN user u ON ue.user_id = u.id" \
-        " WHERE u.id = {0}".format(id)
+        " WHERE u.id = {0}" \
+        " ORDER BY ue.curflag desc, e.created desc".format(id)
     print(sqlstr)	
     events=get_db().execute(sqlstr).fetchall()
     #if events is None:

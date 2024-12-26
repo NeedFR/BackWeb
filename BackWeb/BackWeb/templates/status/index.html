@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block header %}
+	<h1>{% block title %}Status{% endblock %}</h1>
+	{% if g.user %}
+		<a class="action" href="{{ url_for('status.create') }}">Create an event</a>
+	{% endif %}
+{% endblock %}
+
+{% block content %}
+	<h1>We support {{countofevents}} events!</h1>
+	<form method='POST'>
+		<label for="creator">Event Creator</label>
+		<input name="creator" id="creator" required>
+		<label for='eventname'>Event Name</label>
+		<input name="eventname" id="eventname" required>
+	</form>
+	{#
+	{% if g.user['id'] == ['author_id'] %}
+		{% for event in events %}
+		<article class="event">
+			<header>
+				<div>
+					<h1>{{ event['eventname'] }}</h1>
+					<div class="about">by {{ event[''] }} on {{ post['created'].strftime('%Y-%m-%d') }}</div>
+				</div>
+				{% if g.user['id'] == post['author_id'] %}
+				<a class="action" href="{{ url_for('blog.update', id=post['id']) }}">Edit</a>
+				{% endif %}
+			</header>
+			<p class="body">{{ post['body'] }}</p>
+		</article>
+		{% if not loop.last %}
+		<hr>
+		{% endif %}
+		{% endfor %}
+	{% endif %}
+	#}
+	
+{% endblock %}

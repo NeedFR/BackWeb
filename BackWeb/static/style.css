@@ -1,5 +1,10 @@
 html { font-family: sans-serif; background: #eee; padding: 1rem; }
-body { max-width: 960px; margin: 0 auto; background: white; }
+body { 
+    max-width: 960px; 
+    margin: 0 auto; 
+    background: white; 
+    font-family: Arial, sans-serif;
+    }
 h1 { font-family: serif; color: #377ba8; margin: 1rem 0; }
 a { color: #377ba8; }
 hr { border: none; border-top: 1px solid lightgray; }
@@ -24,3 +29,16 @@ nav ul li a, nav ul li span, header .action { display: block; padding: 0.5rem; }
 .content textarea { min-height: 12em; resize: vertical; }
 input.danger { color: #cc2f2e; }
 input[type=submit] { align-self: start; min-width: 10em; }
+.event {
+    padding: 15px;
+    border-bottom: 1px solid #e0e0e0; /* 给每个列表项添加底部边框 */
+    cursor: pointer; /* 鼠标悬停时显示指针样式 */
+    transition: background-color 0.3s ease; /* 过渡效果，让背景颜色变化更平滑 */
+}
+
+.event:last-child {
+    border-bottom: none; /* 移除最后一个列表项的底部边框 */
+}
+
+.event:hover {
+    background-color: #f0f5ff; /* 鼠标悬停时改变背景颜色 */

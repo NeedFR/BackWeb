@@ -32,12 +32,13 @@ def index():
             if a is None:
                 error = 'No such events'
                 flash(error)
-                return render_template('status/index.html')
-            strsql = "INSERT INTO user_event(user_id, event_id, role, curflag) VALUES({0},{1},2,1)".format(g.user['id'],a[1])
-            print(strsql)
-            db.execute(strsql)
-            db.commit()
-            return render_template('status/index.html')
+                #return render_template('status/index.html')
+            else:
+                strsql = "INSERT INTO user_event(user_id, event_id, role, curflag) VALUES({0},{1},2,1)".format(g.user['id'],a[1])
+                print(strsql)
+                db.execute(strsql)
+                db.commit()
+                #return render_template('status/index.html')
     db = get_db()
     #最近三天有过更新的所有event数量
     countofevents = db.execute(
@@ -46,7 +47,6 @@ def index():
     #列出和登录用户相关的所有event
     if g.user is not None:
         events = get_events(g.user['id'])
-        
         return render_template('status/index.html', countofevents=countofevents, events=events)
     else:
         return render_template('status/index.html', countofevents=countofevents, events=None)
